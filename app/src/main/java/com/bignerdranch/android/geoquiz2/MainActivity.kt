@@ -37,17 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         trueButton.setOnClickListener { view: View ->
             checkAnswer(true)
-
-            Toast.makeText(this,
-                    R.string.correct_toast,
-                    Toast.LENGTH_SHORT)
-                    .show()
         }
 
         falseButton.setOnClickListener { view: View ->
             checkAnswer(false)
-
-
         }
 
         nextButton.setOnClickListener { view: View ->
