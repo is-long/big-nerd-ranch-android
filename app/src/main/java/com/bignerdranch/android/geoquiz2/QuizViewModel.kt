@@ -18,14 +18,21 @@ class QuizViewModel: ViewModel() {
         Question(R.string.question_asia, true)
     )
 
+    private var cheatRecord = BooleanArray(questionBank.size){false}
+
     var currentIndex = 0
-    var isCheater = false
 
     val currentQuestionAnswer: Boolean
         get() = questionBank[currentIndex].answer
 
     val currentQuestionText: Int
         get() = questionBank[currentIndex].textResId
+
+    var cheatedCurrentQuestion: Boolean
+        get() = cheatRecord[currentIndex]
+        set(value) {
+            cheatRecord[currentIndex] = value
+        }
 
     fun moveToNext() {
         currentIndex = (currentIndex + 1) % questionBank.size
