@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 
 
 private const val TAG = "QuizViewModel"
+private const val MAX_CHEAT_COUNT: Int = 3;
 
 // good for dynamic data
 class QuizViewModel: ViewModel() {
@@ -17,6 +18,8 @@ class QuizViewModel: ViewModel() {
         Question(R.string.question_americas, true),
         Question(R.string.question_asia, true)
     )
+    private var cheatedArr: BooleanArray = BooleanArray(questionBank.size){false}
+    private var cheatCount: Int = 0
 
     var currentIndex = 0
     var isCheater = false
@@ -26,6 +29,19 @@ class QuizViewModel: ViewModel() {
 
     val currentQuestionText: Int
         get() = questionBank[currentIndex].textResId
+
+    var cheatedCurrentQuestion: Boolean
+        get() = cheatedArr[currentIndex]
+        set(value) {
+            if (!cheatedArr[currentIndex]) {
+                cheatCount++
+            }
+            cheatedArr[currentIndex] = true
+        }
+
+    val canStillCheat: Boolean
+        get() = cheatCount < MAX_CHEAT_COUNT
+
 
     fun moveToNext() {
         currentIndex = (currentIndex + 1) % questionBank.size

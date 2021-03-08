@@ -75,19 +75,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         cheatButton.setOnClickListener { view: View ->
-            // Start CheatActivity
-            // explicit: packageContext + Class object, to start activity within the same app
-            // implicit: app want to start an activity in ANOTHER app
-
-            // google Qualified this
             val intent = CheatActivity.newIntent(this@MainActivity, quizViewModel.currentQuestionAnswer)
-
-            // use ForResult to get response from child
-            // request code is a user-defined Int, sent to child, and send back to parent
-            //     to identify which child is reporting back (a parent activity can start many child)
             startActivityForResult(intent, REQUEST_CODE_CHEAT)
         }
-
         updateQuestion()
     }
 
@@ -99,21 +89,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (requestCode == REQUEST_CODE_CHEAT){
-            quizViewModel.isCheater =
+            quizViewModel.cheatedCurrentQuestion =
                 data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            if (quizViewModel.cheatedCurrentQuestion){
+                cheatButton.isEnabled = false
+            }
         }
     }
 
     private fun updateQuestion() {
         val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
+
+        if (!quizViewModel.canStillCheat or quizViewModel.cheatedCurrentQuestion){
+            cheatButton.isEnabled = false
+        } else {
+            cheatButton.isEnabled = true
+        }
     }
 
     private fun checkAnswer(userAnswer: Boolean){
         val correctAnswer = quizViewModel.currentQuestionAnswer
 
         val messageResId = when {
-            quizViewModel.isCheater -> R.string.judgment_toast
+            quizViewModel.cheatedCurrentQuestion -> R.string.judgment_toast
             userAnswer == correctAnswer -> R.string.correct_toast
             else -> R.string.incorrect_toast
         }
