@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import java.text.DecimalFormat
 
 private const val TAG = "MainActivity"
 
@@ -28,7 +29,8 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var currentIndex = 0
-
+    private var answeredCount = 0
+    private var correctCount = 0
     private val answered: BooleanArray = BooleanArray(questionBank.size){ false }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +46,17 @@ class MainActivity : AppCompatActivity() {
         trueButton.setOnClickListener { view: View ->
             enableTFButtons(false)
             answered[currentIndex] = true
+            answeredCount++
             checkAnswer(true)
+            checkFinish()
         }
 
         falseButton.setOnClickListener { view: View ->
             enableTFButtons(false)
             answered[currentIndex] = true
+            answeredCount++
             checkAnswer(false)
+            checkFinish()
         }
 
         nextButton.setOnClickListener { view: View ->
@@ -72,10 +78,23 @@ class MainActivity : AppCompatActivity() {
         questionTextView.setText(questionTextResId)
     }
 
+    private fun checkFinish() {
+        if (answeredCount == questionBank.size){
+            val score = correctCount.toDouble() / answeredCount * 100
+            val scoreStr = DecimalFormat("#.##").format(score)
+
+            Toast.makeText(this,
+                     "Your score: $scoreStr%",
+                    Toast.LENGTH_LONG)
+                    .show()
+        }
+    }
+
     private fun checkAnswer(userAnswer: Boolean){
         val correctAnswer = questionBank[currentIndex].answer
 
         val messageResId = if (userAnswer == correctAnswer) {
+            correctCount++
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
