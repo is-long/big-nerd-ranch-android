@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
 
     private var currentIndex = 0
 
+    private val answered: BooleanArray = BooleanArray(questionBank.size){ false }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(Bundle?) called")
@@ -40,19 +42,29 @@ class MainActivity : AppCompatActivity() {
         questionTextView = findViewById(R.id.question_text_view)
 
         trueButton.setOnClickListener { view: View ->
+            enableTFButtons(false)
+            answered[currentIndex] = true
             checkAnswer(true)
         }
 
         falseButton.setOnClickListener { view: View ->
+            enableTFButtons(false)
+            answered[currentIndex] = true
             checkAnswer(false)
         }
 
         nextButton.setOnClickListener { view: View ->
             currentIndex = (currentIndex + 1) % questionBank.size
             updateQuestion()
+            enableTFButtons(!answered[currentIndex])
         }
 
         updateQuestion()
+    }
+
+    private fun enableTFButtons(bool: Boolean){
+        trueButton.isEnabled = bool
+        falseButton.isEnabled = bool
     }
 
     private fun updateQuestion() {
