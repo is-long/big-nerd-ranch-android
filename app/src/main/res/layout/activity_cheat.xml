@@ -26,5 +26,12 @@
         android:layout_height="wrap_content"
         android:text="@string/show_answer_button"
         />
+    <TextView
+        android:id="@+id/device_android_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        tools:text="API Level XX"
+        />
 </LinearLayout>
 

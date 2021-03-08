@@ -3,6 +3,7 @@ package com.bignerdranch.android.geoquiz2
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -17,6 +18,7 @@ private const val EXTRA_ANSWER_IS_TRUE =
 class CheatActivity : AppCompatActivity() {
 
     private lateinit var answerTextView: TextView
+    private lateinit var deviceAndroidVersionTextView: TextView
     private lateinit var showAnswerButton: Button
 
     // like static, avoid exposing EXTRA_ANSWER_IS_TRUE to other classes
@@ -38,6 +40,7 @@ class CheatActivity : AppCompatActivity() {
         answerIsTrue = intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
         answerTextView = findViewById(R.id.answer_text_view)
         showAnswerButton = findViewById(R.id.show_answer_button)
+        deviceAndroidVersionTextView =  findViewById(R.id.device_android_version)
         showAnswerButton.setOnClickListener {
             val answerText = when {
                 answerIsTrue -> R.string.true_button
@@ -47,6 +50,8 @@ class CheatActivity : AppCompatActivity() {
 
             setAnswerShownResult(true)
         }
+
+        deviceAndroidVersionTextView.text = "API Level " +  Build.VERSION.SDK_INT
     }
 
     // pack up result code, ready to be sent when CheatActivity is destroyed
