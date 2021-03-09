@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
 
         if (currentFragment == null) {
-            val fragment = CrimeFragment()
+            val fragment = CrimeListFragment.newInstance()
             supportFragmentManager
                 // fragment txn allows grouping multiple operation (add, rmv, detach, replace) together
                 .beginTransaction()
