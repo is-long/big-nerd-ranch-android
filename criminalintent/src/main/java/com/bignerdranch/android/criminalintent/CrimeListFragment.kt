@@ -89,14 +89,26 @@ class CrimeListFragment : Fragment() {
     private inner class CrimeAdapter(var crimes: List<Crime>) :
         RecyclerView.Adapter<CrimeHolder>() {
 
+        override fun getItemViewType(position: Int): Int {
+            var crime = crimes[position]
+            return when {
+                crime.requiresPolice -> 1
+                else -> 0
+            }
+        }
 
         // 1
         // once enough viewHolders been created, RV stops calling this method
         // and instead recycle old viewHolders
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
-            // create a view to display
-            val view = layoutInflater.inflate(R.layout.list_item_crime, parent, false)
 
+            // create a view to display
+            val view = layoutInflater.inflate(
+                when (viewType) {
+                    0 -> R.layout.list_item_crime
+                    else -> R.layout.list_item_crime_serious
+                },
+                parent, false)
 
             //  wrap in ViewHolder
             return CrimeHolder(view)
