@@ -1,2 +1,3 @@
 include ':app'
+include ':criminalintent'
 rootProject.name = "GeoQuiz2"
