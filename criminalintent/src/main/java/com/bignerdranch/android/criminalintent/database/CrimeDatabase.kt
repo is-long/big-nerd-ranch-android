@@ -7,7 +7,7 @@ import com.bignerdranch.android.criminalintent.Crime
 
 // first param= list of entity classes
 // version= keep track of change
-@Database(entities = [ Crime::class], version=1)
+@Database(entities = [ Crime::class], version=1, exportSchema = true)
 @TypeConverters(CrimeTypeConverters::class)  // explicit add converter
 abstract class CrimeDatabase: RoomDatabase() {
 
