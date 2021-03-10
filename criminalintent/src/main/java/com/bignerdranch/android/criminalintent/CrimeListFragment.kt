@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,15 +22,11 @@ class CrimeListFragment : Fragment() {
     // RecyclerView: ViewGroup(), displays list of child View objects, i.e. item views
     // Each item view rep single object (e.g. LinearLayout) from list of data
     private lateinit var crimeRecyclerView: RecyclerView
-    private var adapter: CrimeAdapter? = null
+    // populate adapter with empty, since db query takes time
+    private var adapter: CrimeAdapter? = CrimeAdapter(emptyList())
 
     private val crimeListViewModel: CrimeListViewModel by lazy {
         ViewModelProviders.of(this).get(CrimeListViewModel::class.java)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "Total crimes: ${crimeListViewModel.crimes.size}")
     }
 
     override fun onCreateView(
@@ -45,14 +42,40 @@ class CrimeListFragment : Fragment() {
         // Layout manager positions list items on the screen, defines how scrolling work
         // Linear LM position items on the list vertically
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
+        crimeRecyclerView.adapter = adapter
 
-        updateUI()
 
         return view
     }
 
-    private fun updateUI() {
-        val crimes = crimeListViewModel.crimes
+    // called after onCreateView, i.e. after view hierarchy created
+    // put observation to make sure the view is ready to display data
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        crimeListViewModel.crimeListLiveData.observe(
+            // register observer on LD instance, tie observation life to activity/component
+            // this fragment is the scope of the Observer's lifetime
+
+            // LifecycleOwner = implements LCO interface + contains a Lifecycle
+            // Lifecycle = obj keeping track of Android's lifecycle's state
+            // Fragment is a LCO
+
+            // use fragment's view LC, rather than the Fragment's LC
+            // bcs we want to pass data only when the VIEW is in good state (not just the Fragment)
+            viewLifecycleOwner,
+
+            // but if observer never cancelled, and tries to update nonexistent view -> crash
+            Observer {
+                crimes ->
+                crimes?.let {
+                    Log.i(TAG, "Got crimes ${crimes.size}")
+                    updateUI(crimes)
+                }
+            }
+        )
+    }
+
+    private fun updateUI(crimes: List<Crime>) {
         adapter = CrimeAdapter(crimes)
         crimeRecyclerView.adapter = adapter
     }
