@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,10 +15,31 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 private const val TAG = "CrimeListFragment"
 
 class CrimeListFragment : Fragment() {
+
+    // delegate on-click events from CrimeListFragment back to hosting activity
+    interface Callbacks {
+        fun onCrimeSelected(crimeId: UUID)
+    }
+
+    private var callbacks: Callbacks? = null
+
+    // called when fragment attached to activity
+    // context = hosting activity
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // unchecked cast, i.e. hosting activity must implement CLF.Callbacks
+        callbacks = context as Callbacks?
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
 
     // RecyclerView: ViewGroup(), displays list of child View objects, i.e. item views
     // Each item view rep single object (e.g. LinearLayout) from list of data
@@ -114,7 +136,7 @@ class CrimeListFragment : Fragment() {
         }
 
         override fun onClick(v: View?) {
-            Toast.makeText(context, "${crime.title} pressed!", Toast.LENGTH_SHORT).show()
+            callbacks?.onCrimeSelected(crime.id)
         }
     }
 
@@ -155,4 +177,6 @@ class CrimeListFragment : Fragment() {
             return CrimeListFragment()
         }
     }
+
+
 }
