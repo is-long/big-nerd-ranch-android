@@ -19,8 +19,10 @@ import java.util.*
 private const val TAG = "CrimeFragment"
 private const val ARG_CRIME_ID = "crime_id"
 private const val DIALOG_DATE = "DialogDate"
+private const val REQUEST_DATE = 0
 
-class CrimeFragment: Fragment() {
+class CrimeFragment: Fragment(),
+    DatePickerFragment.Callbacks {
 
     // store state
     private lateinit var crime: Crime
@@ -124,7 +126,10 @@ class CrimeFragment: Fragment() {
         }
 
         dateButton.setOnClickListener {
-            DatePickerFragment().apply {
+            DatePickerFragment.newInstance(crime.date).apply {
+                // make this fragment the target fragment of DatePickerFragment
+                setTargetFragment(this@CrimeFragment, REQUEST_DATE)
+
                 // need non-null FM,  requireFragmentManager() returns non-null
                 // fragmentManager? might be null
                 show(this@CrimeFragment.requireFragmentManager(), DIALOG_DATE)
@@ -146,5 +151,10 @@ class CrimeFragment: Fragment() {
                 arguments = args
             }
         }
+    }
+
+    override fun onDateSelected(date: Date) {
+        crime.date = date
+        updateUI()
     }
 }
