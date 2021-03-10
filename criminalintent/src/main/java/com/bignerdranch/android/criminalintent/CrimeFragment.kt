@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.Observer
@@ -38,6 +39,7 @@ class CrimeFragment: Fragment(),
     // public, because they've got to be called by any calling activity host
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         crime = Crime()
 
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID

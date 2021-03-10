@@ -3,14 +3,10 @@ package com.bignerdranch.android.criminalintent
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +30,12 @@ class CrimeListFragment : Fragment() {
         super.onAttach(context)
         // unchecked cast, i.e. hosting activity must implement CLF.Callbacks
         callbacks = context as Callbacks?
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // let fragmentManager know needs to receive menu callbacks
+        setHasOptionsMenu(true)
     }
 
     override fun onDetach() {
@@ -172,11 +174,33 @@ class CrimeListFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        // show the New Crime button on app bar
+        inflater.inflate(R.menu.fragment_crime_list, menu)
+    }
+
+    // when clicked, fragment receives callback  for this function
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when (item.itemId) {
+            R.id.new_crime -> {
+                // create empty crime in DB
+                val crime = Crime()
+                crimeListViewModel.addCrime(crime)
+
+                // auto 'select' from the list
+                // to apparently show new crime form
+                callbacks?.onCrimeSelected(crime.id)
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
     companion object {
         fun newInstance(): CrimeListFragment {
             return CrimeListFragment()
         }
     }
-
-
 }
