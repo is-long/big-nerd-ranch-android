@@ -4,7 +4,13 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 
 // let VM comms w/ layout file when change occurs by implementing Observable()
-class SoundViewModel: BaseObservable() {
+class SoundViewModel(private val beatBox: BeatBox): BaseObservable() {
+    fun onButtonClicked() {
+        sound?.let {
+            beatBox.play(it)
+        }
+    }
+
     var sound: Sound? = null
         set(sound) {
             field = sound
