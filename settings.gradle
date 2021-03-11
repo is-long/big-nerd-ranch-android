@@ -1,3 +1,4 @@
+include ':nerdlauncher'
 include ':beatbox'
 include ':app'
 include ':criminalintent'
