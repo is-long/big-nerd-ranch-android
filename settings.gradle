@@ -1,6 +1,6 @@
 include ':photogallery'
 include ':nerdlauncher'
 include ':beatbox'
-include ':app'
+include ':geoquiz'
 include ':criminalintent'
-rootProject.name = "GeoQuiz2"
+rootProject.name = "geoquiz"
